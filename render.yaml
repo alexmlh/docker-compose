@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: my-app
+    env: docker
+    repo: https://github.com/alexmlh/docker-compose
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: MONGO_DB_USERNAME
+        value: admin
+      - key: MONGO_DB_PWD
+        value: supersecret
+      - key: MONGO_URL
+        value: mongodb://admin:supersecret@mongodb:27017/?authSource=admin
+    dependsOn:
+      - mongodb
+
+  - type: web
+    name: mongodb
+    env: docker
+    dockerImage: mongo
+    plan: free
+    envVars:
+      - key: MONGO_INITDB_ROOT_USERNAME
+        value: admin
+      - key: MONGO_INITDB_ROOT_PASSWORD
+        value: supersecret
+    disk:
+      name: data
+      mountPath: /data/db
+      sizeGB: 1
+
+  - type: web
+    name: mongo-express
+    env: docker
+    dockerImage: mongo-express
+    plan: free
+    envVars:
+      - key: ME_CONFIG_MONGODB_ADMINUSERNAME
+        value: admin
+      - key: ME_CONFIG_MONGODB_ADMINPASSWORD
+        value: supersecret
+      - key: ME_CONFIG_MONGODB_SERVER
+        value: mongodb
+    dependsOn:
+      - mongodb
