@@ -12,13 +12,11 @@ services:
         value: supersecret
       - key: MONGO_URL
         value: mongodb://admin:supersecret@mongodb:27017/?authSource=admin
-    dependsOn:
-      - mongodb
 
   - type: web
     name: mongodb
     env: docker
-    dockerImage: mongo
+    image: mongo
     plan: free
     envVars:
       - key: MONGO_INITDB_ROOT_USERNAME
@@ -33,7 +31,7 @@ services:
   - type: web
     name: mongo-express
     env: docker
-    dockerImage: mongo-express
+    image: mongo-express
     plan: free
     envVars:
       - key: ME_CONFIG_MONGODB_ADMINUSERNAME
@@ -42,5 +40,3 @@ services:
         value: supersecret
       - key: ME_CONFIG_MONGODB_SERVER
         value: mongodb
-    dependsOn:
-      - mongodb
