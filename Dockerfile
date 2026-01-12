@@ -1,15 +1,19 @@
 FROM node:20-alpine
 
-RUN mkdir -p /home/app
-
-COPY ./app /home/app
-
-# set default dir so that next commands executes in /home/app dir
+# Create working directory
 WORKDIR /home/app
 
-# will execute npm install in /home/app because of WORKDIR
+# Copy package files first for better caching
+COPY app/package*.json ./
+
+# Install dependencies
 RUN npm install
 
+# Copy the rest of the app
+COPY app .
+
+# Expose the port your server listens on
 EXPOSE 3000
-# no need for /home/app/server.js because of WORKDIR
+
+# Start the server
 CMD ["node", "server.js"]
